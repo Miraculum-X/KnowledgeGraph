@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="ct">connect</button>
+    <button id="sd" disabled="true">send message</button><br/>
+    <span id="rc"></span>
+    <script>
+        var ct = document.querySelector('#ct')
+        var sd = document.querySelector('#sd')
+        var rc = document.querySelector('#rc')
+        let ws = null
+
+        // WebSocket 是window对象内置的 可直接使用
+        ct.onclick = function(){
+            ws = new WebSocket('ws://localhost:9998')
+
+            // 事件监听，满足条件自动触发
+            ws.onopen = ()=>{
+                console.log('success')
+                sd.disabled = false
+            }
+            ws.onclose = ()=>{
+                console.log('fail')
+                sd.disabled = true
+            }
+            ws.onmessage = msg =>{
+                console.log(msg)
+                rc.innerHTML = msg.data
+            }
+        }
+
+        sd.onclick = function(){
+            ws.send(JSON.stringify({
+                action:'fullScreen',
+                socktType: 'fullScreen',
+                chartName: 'trend',
+                value: 'true'
+            }))
+        }
+    </script>
+</body>
+</html>
